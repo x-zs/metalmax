@@ -4,7 +4,6 @@
 
 var GameWorldLayer = cc.Layer.extend({
     btn                 : null,
-    menu                : 0,
     mapWidth            : 0,
     mapHeight           : 0,
     mapSize             : 0,
@@ -21,6 +20,9 @@ var GameWorldLayer = cc.Layer.extend({
     tank                : null,
     tankStatus          : null,
     tanktPoint          : 0,
+    menu                : null,     // [菜单]
+    layer               : null,     // [属性]
+    menuStatus          : 0,     // [属性]
 
     ctor:function () {
         this._super();
@@ -30,6 +32,7 @@ var GameWorldLayer = cc.Layer.extend({
         this.loadMainLayer();
         // 加载摇杆
         this.loadRocker();
+
 
         return true;
     },
@@ -50,6 +53,29 @@ var GameWorldLayer = cc.Layer.extend({
         //获取map中的object
         this.mapObject = this.map.getObjectGroup('Object');
         this.startPoint = this.mapObject.getObject('startPoint');
+
+    },
+    //初始化视角，玩家等
+    loadMainLayer : function(){
+
+        cc.spriteFrameCache.addSpriteFrames(res.zhujiao_plist);
+        cc.spriteFrameCache.addSpriteFrames(res.no7_plist);
+
+        this.tankPoint = this.mapObject.getObject('NO7');
+        this.tank = new cc.Sprite('#NO7_1_1.png');
+        this.addChild(this.tank,1);
+        this.tank.setScale(2);
+        this.tank.setPosition(this.tankPoint);
+
+        this.player = new cc.Sprite('#lang_1_1.png');
+        this.addChild(this.player,1);
+        this.player.name = '红狼';
+        this.player.setPosition(this.startPoint);
+        this.player.setScale(2);
+
+        //视角跟随
+        this.setViewPointCenter(this.player);
+        // this.runAction(cc.follow(this.player, cc.rect(0, 0,this.mapWidth,this.mapHeight)));
 
     },
     //碰撞层方法
@@ -80,16 +106,16 @@ var GameWorldLayer = cc.Layer.extend({
         this.addChild(this.rocker,2);
         this.rocker.setPosition(this.player.x-280,this.player.y-100);
 
-        var labelA = new cc.LabelTTF("乘降", "Arial", 40);
-        var labelB = new cc.LabelTTF("C", "Arial", 40);
+        var labelA = new cc.LabelTTF("B", "Arial", 40);
+        var labelB = new cc.LabelTTF("A", "Arial", 40);
         //创建菜单，并监听
-        var nodeA = new cc.MenuItemLabel(labelA,this.updownCheck,this);
-        var nodeB = new cc.MenuItemLabel(labelB,'',this);
+        var nodeA = new cc.MenuItemLabel(labelA,this.LoadMenu,this);
+        var nodeB = new cc.MenuItemLabel(labelB,this.LoadMenu,this);
         this.btn = new cc.Menu(nodeA,nodeB);
         //添加的子节点水平间距
         this.btn.alignItemsHorizontallyWithPadding(50);
         this.addChild(this.btn,4);
-        this.btn.setPosition(this.player.x+350,this.player.y-120);
+        this.btn.setPosition(this.player.x+280,this.player.y-120);
         nodeB.setColor(cc.color.RED);
         nodeA.setColor(cc.color.BLUE);
 
@@ -163,31 +189,10 @@ var GameWorldLayer = cc.Layer.extend({
         this.setViewPointCenter(p);
         //跟随玩家位置
         this.rocker.setPosition(this.player.x-280,this.player.y-100);
-        this.btn.setPosition(this.player.x+350,this.player.y-120);
+        this.btn.setPosition(this.player.x+260,this.player.y-120);
     },
-    //初始化视角，玩家等
-    loadMainLayer : function(){
 
-        cc.spriteFrameCache.addSpriteFrames(res.zhujiao_plist);
-        cc.spriteFrameCache.addSpriteFrames(res.no7_plist);
-
-        this.tankPoint = this.mapObject.getObject('NO7');
-        this.tank = new cc.Sprite('#NO7_1_1.png');
-        this.addChild(this.tank,1);
-        this.tank.setScale(2);
-        this.tank.setPosition(this.tankPoint);
-
-        this.player = new cc.Sprite('#lang_1_1.png');
-        this.addChild(this.player,1);
-        this.player.name = '红狼';
-        this.player.setPosition(this.startPoint);
-        this.player.setScale(2);
-
-        //视角跟随
-        this.setViewPointCenter(this.player);
-        // this.runAction(cc.follow(this.player, cc.rect(0, 0,this.mapWidth,this.mapHeight)));
-
-    },
+    //乘降战车距离检测
     updownCheck : function() {
         var p = this.player.getPosition();
         var t = this.tank.getPosition();
@@ -261,6 +266,87 @@ var GameWorldLayer = cc.Layer.extend({
         // }
 
 
+    },
+    LoadMenu : function(){
+        if (this.menuStatus) {
+            this.rocker.resume();
+            this.rocker.setVisible(true);
+            this.layer.setVisible(false);
+            this.menuStatus = 0;
+            return;
+        }else {
+            this.rocker.pause();
+            this.rocker.setVisible(false);
+            if (this.menu) {
+                this.layer.setPosition(this.player.x-240,this.player.y-200);
+                this.layer.setVisible(true);
+                this.menuStatus = 1;
+                return;
+            }
+
+            this.layer = new cc.LayerColor(cc.color.BLACK,460,170);
+            this.menu = new cc.Menu();
+
+            var item = [['对话',this.waitTodo],['强度',this.waitTodo],['装备',this.waitTodo],['调查',this.waitTodo],['乘降',this.updownCheck],['工具',this.waitTodo],['炮弹',this.waitTodo],['模式',this.waitTodo]];
+
+            for (var i = 0; i < item.length; i++) {
+                var str = item[i][0];
+                var Label = new cc.LabelTTF(str,"Arial",24);
+                var node = new cc.MenuItemLabel(Label,item[i][1],this);
+                node.setName(str);
+                this.menu.addChild(node);
+            }
+
+
+            // this.menu.setContentSize(cc.size(100,100));
+            //添加的子节点水平间距
+            this.menu.alignItemsHorizontally();
+            // 两列四行
+            this.menu.alignItemsInRows(4,4);
+            // 水平间距
+            // this.menu.alignItemsHorizontallyWithPadding(10);
+            // 垂直间距
+            // this.menu.alignItemsVerticallyWithPadding(10);
+
+            // 菜单统一加载的layer
+            this.layer.addChild(this.menu,3);
+
+            //加载属性
+            this.LoadPro();
+        }
+
+    },
+    LoadPro :  function(){
+
+        var name =  new cc.LabelTTF("红狼","Arial",18);
+        var hp = new cc.LabelTTF("HP","Arial",18);
+        var hpnumber = new cc.LabelTTF("34","Arial",18);
+        var sp = new cc.LabelTTF("SP","Arial",18);
+        var spnumber = new cc.LabelTTF("280","Arial",18);
+
+        // 统一加载的layer
+        this.layer.addChild(name);
+        this.layer.addChild(hp);
+        this.layer.addChild(hpnumber);
+        this.layer.addChild(sp);
+        this.layer.addChild(spnumber);
+        this.addChild(this.layer);
+
+        //位置设定
+        var w = this.layer.getContentSize().width;
+        var h = this.layer.getContentSize().height;
+        hpnumber.setPosition(w-20,h-20);
+        hp.setPosition(w/6 * 5,h-20);
+        name.setPosition(w/2,h-20);
+        spnumber.setPosition(w-20,h/5 * 3);
+        sp.setPosition(w/6 * 5,h/5 * 3);
+
+        this.menu.setPosition(60,h*1.5);
+
+        this.layer.setPosition(this.player.x-240,this.player.y-200);
+    },
+    waitTodo : function () {
+        alert('正在建设中。。。。。。');
     }
 });
 
