@@ -20,7 +20,13 @@
 
         "src/StartMenu/StartMenu.js",
         "src/StartMenu/layer/BackgroundLayer.js",
-        "src/StartMenu/layer/MainLayer.js"
+        "src/StartMenu/layer/MainLayer.js",
+
+        "src/Name/InputNameSceneM.js",
+
+        "src/Fight/BattleSceneM.js",
+        "src/Fight/EnemySpriteM.js",
+        "src/Fight/RoleSpriteM.js"
 
 
     ]

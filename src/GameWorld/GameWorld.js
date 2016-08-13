@@ -26,6 +26,8 @@ var GameWorldLayer = cc.Layer.extend({
 
     ctor:function () {
         this._super();
+        //背景音乐
+        cc.audioEngine.playMusic(res.mp3_world, true);
         //载入大地图
         this.loadBackground();
         //载入玩家
@@ -93,6 +95,8 @@ var GameWorldLayer = cc.Layer.extend({
             if (properties) {
                 var collision = properties["Collidable"];
                 if ("true" == collision) {
+                    cc.director.pushScene(new BattleSceneM());
+                    // cc.director.runScene();
                     return ;
                 }
             }
