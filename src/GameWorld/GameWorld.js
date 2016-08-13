@@ -22,7 +22,7 @@ var GameWorldLayer = cc.Layer.extend({
     tanktPoint          : 0,
     menu                : null,     // [菜单]
     layer               : null,     // [属性]
-    menuStatus          : 0,     // [属性]
+    menuStatus          : 0,     // [菜单状态]
 
     ctor:function () {
         this._super();
