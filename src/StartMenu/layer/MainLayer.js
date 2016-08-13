@@ -34,8 +34,8 @@ var MMMainLayer = cc.Layer.extend({
         var node = new cc.MenuItemLabel(
             label,
             function(){
-                var scene = new GameWorldScene();
-                cc.director.runScene(  scene );
+                //new GameWorldScene()
+                cc.director.runScene(  new InputNameSceneM("起个名字吧") );
             },
             this
         );
