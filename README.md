@@ -5,7 +5,7 @@
 * 热更新
 * 能把这个坑给填完吧
 
-### [编译好的web试玩版](url:http://duanxq.cn/metalmax/index.html)
+### [编译好的web试玩版](http://duanxq.cn/metalmax/index.html)
 
 ### 嗯，慢慢填坑中
 * 嗯，为零食美工默哀
