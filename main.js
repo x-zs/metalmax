@@ -124,6 +124,7 @@ cc.game.onStart = function(){
     cc.LoaderScene.preload(g_resources, function () {
         cc.director.runScene(new StartMenuScene());
         // cc.director.runScene(new GameWorldScene());
+        // cc.director.pushScene(new BattleSceneM());
         // cc.director.runScene(new ChooseLevelScene());
         //cc.director.runScene(new LevelInfoScene());
         //cc.director.runScene(new GameOverScene());

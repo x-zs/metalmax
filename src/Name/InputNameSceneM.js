@@ -68,6 +68,7 @@ var InputNameLayerM = cc.Layer.extend({
 			    		if (inputNameTextField.getContentText().length != 0) {
 			    			inputNameTextField.detachWithIME();
 			                cc.log("输入的用户名为： "+inputNameTextField.getContentText());
+			                cc.director.runScene(new GameWorldScene());
 			            }else{
 			            	inputNameTextField.attachWithIME();
 			            	cc.log("未输入任何文字");

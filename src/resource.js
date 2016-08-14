@@ -17,15 +17,13 @@ var res = {
     no7_plist : "res/player/no7.plist",
     no7_png   : "res/player/no7.png",
 
-    UI_Main_png   : "res/UI/UI_Main.png",
-
     wav_gun : "res/sound/WAR/WT_Cannon.wav",
     wav_gunEnd : "res/sound/WAR//WT_Cannon_End.wav",
-    A2_plist : "res/player/A_M.plist",
-    A2_png   : "res/player/A_M.png",
+    A2_plist : "res/fight/FA/A_M.plist",
+    A2_png   : "res/fight/FA/A_M.png",
     BattleBG_M_png : "res/Test/HeiYan.png",
-    BattleEnemy_M_png : "res/Test/MWZZ.png",
-    BattleRole_M_png : "res/Test/PKQ.png",
+    BattleEnemy_M_png : "res/fight/enemy/X04_JP.png",
+    BattleRole_M_png : "res/fight/tank/RLA.png",
     enemyBullet_M_png : "res/Test/enemyBullet.png",
     roleBullet_M_png : "res/Test/roleBullet.png"
 

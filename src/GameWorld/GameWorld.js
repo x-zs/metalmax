@@ -95,8 +95,12 @@ var GameWorldLayer = cc.Layer.extend({
             if (properties) {
                 var collision = properties["Collidable"];
                 if ("true" == collision) {
-                    cc.director.pushScene(new BattleSceneM());
-                    // cc.director.runScene();
+                     //战斗测试
+                     if (this.tankStatus) {
+                         this.runAction(cc.blink(1.0, 10));
+                         this.scheduleOnce(function(){cc.director.pushScene(new BattleSceneM())},1.0);
+                     }
+
                     return ;
                 }
             }
@@ -219,7 +223,6 @@ var GameWorldLayer = cc.Layer.extend({
                 this.tank.setVisible(true);
             }
             this.playerChangeDir(this.playerDir);
-
         }else{
             //乘降提示
             var label = this.getChildByTag(101);
