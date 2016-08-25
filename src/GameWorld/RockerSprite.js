@@ -23,17 +23,18 @@ Direction.D_LEFT 		= 2;
 
 // 摇杆精灵
 var Rocker = cc.Sprite.extend({
-    _base       : null,                 // 底盘
-    _knob       : null,                 // 摇杆
-    _listener   : null,                 // 监听器
-    radius      : 0,                    // 可移动半径[摇杆_knob]
-    speed       : null,                 // 速度
-    type        : RockerType.DEFAULT,   // 摇杆类型
-    direction   : Direction.DEFAULT,    // 方向
-    angle       : 0,                    // 角度
-    radians     : 0,                    // 弧度
-    callback    : null,                 // 回调函数
-    _callbackSch: null,                 // 计时器[回调函数]
+    _base           : null,                 // 底盘
+    _knob           : null,                 // 摇杆
+    _listener       : null,                 // 监听器
+    radius          : 0,                    // 可移动半径[摇杆_knob]
+    speed           : null,                 // 速度
+    type            : RockerType.DEFAULT,   // 摇杆类型
+    direction       : Direction.DEFAULT,    // 方向
+    angle           : 0,                    // 角度
+    radians         : 0,                    // 弧度
+    callback        : null,                 // 回调函数
+    _callbackSch    : null,                 // 计时器[回调函数]
+    p               : null,                 // 玩家位置
     ctor: function(baseTexture, knobTexture, type){
         this._super();
         // 加载[底盘和摇杆精灵]
@@ -139,7 +140,7 @@ var Rocker = cc.Sprite.extend({
         // _knob活动区域判断[如果_knob不在摇杆区域内]
         if ( tmpLength > target.radius){
             // TODO 速度更新[速度达到最大值]
-            target.speed = 1;
+            // target.speed = 1;
             // _knob超出区域
             var x = Math.cos(target.radians) * target.radius;
             var y = Math.sin(target.radians) * target.radius;
@@ -148,7 +149,7 @@ var Rocker = cc.Sprite.extend({
             target.loadSchedule();
         }else{
             // TODO 速度更新
-            target.speed = tmpLength / target.radius;
+            // target.speed = tmpLength / target.radius;
             knob.setPosition(locationInNode);
             target.unLoadSchedule();
             // TODO 手动调用, 保证callback被调用

@@ -26,7 +26,9 @@
 
         "src/Fight/BattleSceneM.js",
         "src/Fight/EnemySpriteM.js",
-        "src/Fight/RoleSpriteM.js"
+        "src/Fight/RoleSpriteM.js",
+
+        "src/Town/LaduoSceneM.js"
 
 
     ]

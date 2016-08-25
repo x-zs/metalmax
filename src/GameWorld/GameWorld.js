@@ -16,10 +16,11 @@ var GameWorldLayer = cc.Layer.extend({
     rocker              : null,     // 摇杆
     player              : null,
     playerDir           : 0,        // [当前方向]
-    playerSpeed         : 3.0,      // [速度]
+    playerSpeed         : 1.5,      // [速度]
     tank                : null,
     tankStatus          : null,
     tanktPoint          : 0,
+    inPoint             : 0,
     menu                : null,     // [菜单]
     layer               : null,     // [属性]
     menuStatus          : 0,     // [菜单状态]
@@ -41,7 +42,10 @@ var GameWorldLayer = cc.Layer.extend({
     loadBackground : function(){
         //载入tile map
         this.map = new cc.TMXTiledMap(res.MainMap_tmx);
-        this.mapBg = this.map.getLayer("bg");
+        // cc.log(this.map);
+        // this.map = new cc.TMXTiledMap(res.home2_tmx);
+
+        // this.mapBg = this.map.getLayer("bg");
         //隐藏碰撞层
         this.mapMeta = this.map.getLayer("meta");
         this.mapMeta.setVisible(false);
@@ -50,11 +54,13 @@ var GameWorldLayer = cc.Layer.extend({
         //获取map size 方形，获取单边即可
         this.mapHeight = this.mapWidth = this.map.getContentSize().width;
         this.mapTile = this.map.getTileSize().height;
+        //多少块
         this.mapSize = this.map.getMapSize().height;
 
         //获取map中的object
-        this.mapObject = this.map.getObjectGroup('Object');
-        this.startPoint = this.mapObject.getObject('startPoint');
+        this.mapObject = this.map.getObjectGroup('obj');
+        this.startPoint = this.mapObject.getObject('player');
+        this.tankPoint = this.mapObject.getObject('tank');
 
     },
     //初始化视角，玩家等
@@ -63,17 +69,16 @@ var GameWorldLayer = cc.Layer.extend({
         cc.spriteFrameCache.addSpriteFrames(res.zhujiao_plist);
         cc.spriteFrameCache.addSpriteFrames(res.no7_plist);
 
-        this.tankPoint = this.mapObject.getObject('NO7');
         this.tank = new cc.Sprite('#NO7_1_1.png');
         this.addChild(this.tank,1);
-        this.tank.setScale(2);
+        // this.tank.setScale(2);
         this.tank.setPosition(this.tankPoint);
 
         this.player = new cc.Sprite('#lang_1_1.png');
         this.addChild(this.player,1);
         this.player.name = '红狼';
         this.player.setPosition(this.startPoint);
-        this.player.setScale(2);
+        // this.player.setScale(2);
 
         //视角跟随
         this.setViewPointCenter(this.player);
@@ -81,37 +86,52 @@ var GameWorldLayer = cc.Layer.extend({
 
     },
     //碰撞层方法
-    tileCoordForPosition : function(position){
-        var x = position.x /this.mapTile;
-        var y = (( this.mapSize * this.mapTile) - position.y) / this.mapTile;
+    tileCoordForPosition : function(p){
+        var x = Math.round( p.x / this.mapTile );
+        //TMX是左上角为0,0  cocos2d-x是左下角为0,0
+        var y = Math.round( (( this.mapSize * this.mapTile) - p.y) / this.mapTile );
         return cc.p(x, y);
     },
-    setPlayerPosition : function(position){
-        var tileCoord = this.tileCoordForPosition(position);
-
+    setPlayerPosition : function(p){
+        var tileCoord = this.tileCoordForPosition(p);
+        // tileGIDAt
         var tileGid = this.mapMeta.getTileGIDAt(tileCoord);
         if (tileGid) {
             var properties = this.map.getPropertiesForGID(tileGid);
-            if (properties) {
-                var collision = properties["Collidable"];
-                if ("true" == collision) {
-                     //战斗测试
-                     if (this.tankStatus) {
-                         this.runAction(cc.blink(1.0, 10));
-                         this.scheduleOnce(function(){cc.director.pushScene(new BattleSceneM())},1.0);
-                     }
-
-                    return ;
-                }
+            // cc.log(properties);
+            if (properties.collide=="true") {
+                return ;
+            }else if (properties.in=="true") {
+                cc.director.runScene(new LaduoSceneM());
             }
+
         }
-        this.player.setPosition(position);
+        this.player.setPosition(p);
+         //          //战斗测试
+            //          if (this.tankStatus) {
+            //              this.runAction(
+            //                 //顺序执行
+            //                 cc.sequence(
+            //                     cc.spawn(
+            //                         cc.blink(1.0, 10),
+            //                         //爆炸音效
+            //                         cc.callFunc(function(){
+            //                             cc.audioEngine.playEffect(res.mp3_Battle);
+            //                         })
+            //                     ),
+            //                     //延时
+            //                     cc.delayTime(2.0),
+            //                     cc.director.pushScene(new BattleSceneM())
+            //                 )
+            //             )
+            //          }
+
     },
     // 加载摇杆 按钮
     loadRocker : function(){
         this.rocker = new Rocker(res.JoystickBG, res.Joystick, 128);
         this.rocker.callback = this.onCallback.bind(this);
-        this.addChild(this.rocker,2);
+        this.addChild(this.rocker,3);
         this.rocker.setPosition(this.player.x-280,this.player.y-100);
 
         var labelA = new cc.LabelTTF("B", "Arial", 40);
@@ -168,24 +188,26 @@ var GameWorldLayer = cc.Layer.extend({
         // 获取摇杆方向
         var dir = this.rocker.direction;
         // 获取摇杆速度 (取值范围[0-1])
-        var rockerSpeed = this.rocker.speed;
+        // var rockerSpeed = this.rocker.speed;
         // 获取摇杆弧度
         var radians = this.rocker.radians;
         var p = this.player.getPosition();
         switch (dir){
             case Direction.D_UP:
-                p.y += rockerSpeed * this.playerSpeed;
+                // p.y += rockerSpeed * this.playerSpeed;
+                p.y += this.playerSpeed;
                 break;
             case Direction.D_RIGHT:
-                p.x += rockerSpeed * this.playerSpeed;
+                p.x += this.playerSpeed;
                 break;
             case Direction.D_DOWN:
-                p.y -= rockerSpeed * this.playerSpeed;
+                p.y -= this.playerSpeed;
                 break;
             case Direction.D_LEFT:
-                p.x -= rockerSpeed * this.playerSpeed;
+                p.x -= this.playerSpeed;
                 break;
             default :
+                this.player.stopAllActions();
                 break;
         }
 

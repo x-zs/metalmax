@@ -1,4 +1,3 @@
-var Index_M = 0;
 
 //定义战斗层
 var BattleLayerM = cc.Layer.extend({
@@ -13,15 +12,6 @@ var BattleLayerM = cc.Layer.extend({
         //初始化资源和精灵
         this.loadAndInt();
 
-        // this.schedule(this.battleFun,3,6,1);
-
-        /*
-        schedule(callback_fn, interval, repeat, delay)里面四个参数对应的含义是：
-        callback_fn：调用的方法名
-        interval：间隔多久再进行调用
-        repeat：重复的次数
-        delay：延迟多久再进行调用
-        */
     },
     loadAndInt : function () {
         //背景音乐
@@ -198,73 +188,7 @@ var BattleLayerM = cc.Layer.extend({
         cc.director.popScene();
     }
 
-    // action:function(attack){
 
-    //
-    //     backAction_R.delayTime = time;
-    //     if (attack == "E") {
-    //         //攻击动作
-    //         this.enemy.runAction(cc.sequence(cc.delayTime(startTime),attackAction_E,backAction_E));
-
-    //         this.player.runAction(cc.sequence(cc.delayTime(startTime+time+bulletTime),backAction_R,attackAction_R));
-
-    //         this.player.HP -= (this.enemy.AT - this.player.DF);
-
-    //         // this.bullet.setTexture(res.enemyBullet_M_png);
-
-    //         this.bullet.setPosition(this.enemy.getPositionX(),this.enemy.getPositionY());
-
-    //         var bulletAction = cc.moveTo(bulletTime,cc.p(this.player.getPositionX(),this.player.getPositionY()));
-    //         this.bullet.runAction(
-    //             //并发执行
-    //             cc.spawn(
-    //                 bulletVis,
-    //                 //开炮
-    //                 this.getAnimate(1),
-    //                 //开炮音效
-    //                 cc.callFunc(function(){
-    //                     cc.audioEngine.playEffect(res.wav_gun);
-    //                 }),
-    //                 //移动炮弹
-    //                 bulletAction,
-    //                 //顺序执行
-    //                 cc.sequence(
-    //                     //延时
-    //                     cc.delayTime(startTime+time),
-    //                     cc.spawn(
-    //                         //爆炸音效
-    //                         cc.callFunc(function(){
-    //                             cc.audioEngine.playEffect(res.wav_gunEnd);
-    //                         }),
-    //                         //爆炸
-    //                         this.getAnimate(0)
-
-    //                     ),
-    //                     bulletHId
-    //                 )
-    //             )
-    //         );
-    //         //战斗信息输出
-    //         this.warLog(this.player.HP,this.enemy.HP,0);
-
-    //     }else if (attack == "R") {
-    //         this.enemy.HP -= (this.player.AT - this.enemy.DF);
-
-    //         this.player.runAction(
-    //             cc.sequence(cc.delayTime(startTime),attackAction_R,backAction_R));
-
-    //         //this.bullet.setTexture(res.roleBullet_M_png);
-
-
-    //         if (this.enemy.HP > 0) {
-    //             this.enemy.runAction(cc.sequence(cc.delayTime(startTime+time+bulletTime),backAction_E,attackAction_E));
-    //         }else{
-    //             this.enemy.runAction(cc.sequence(cc.delayTime(startTime+time+bulletTime),cc.blink(1,3),cc.fadeTo(0,0)));
-    //             this.pause();
-    //             cc.director.popToRootScene();
-    //         };
-    //     };
-    // },
 });
 //定义战斗背景层
 // var BattleBackgroundLayerM = cc.Layer.extend({
